@@ -1,44 +1,92 @@
-const redux = require('redux')
+const redux = require("redux");
 
 // Action Types
-const ITEM_ORDERED = 'ITEM_ORDERED'
+const COFFEE_ORDERED = "COFFEE_ORDERED";
+const COFFEE_RESTOCKED = "COFFEE_RESTOCKED";
+
+const TEA_ORDERED = "TEA_ORDERED";
+const TEA_RESTOCKED = "TEA_RESTOCKED";
 
 // Action Creator
-const orderItem = (quantity) => {
-    return {
-        type: ITEM_ORDERED,
-        quantity
-    }
-}
+const orderCoffee = (qty) => {
+  return {
+    type: COFFEE_ORDERED,
+    payload: qty,
+  };
+};
+const restockCoffee = (qty) => {
+  return {
+    type: COFFEE_RESTOCKED,
+    payload: qty,
+  };
+};
+
+const orderTea = (qty) => {
+  return {
+    type: TEA_ORDERED,
+    payload: qty,
+  };
+};
+const restockTea = (qty) => {
+  return {
+    type: TEA_RESTOCKED,
+    payload: qty,
+  };
+};
 
 // initialState
-const initialState = {
-    itemCount : 10
-}
+const initialCoffeeState = {
+  coffeeCount: 10,
+};
+const initialTeaState = {
+  teaCount: 20,
+};
 
 // Reducer
-const reducer = (state=initialState, action) => {
-    switch(action.type){
-        case ITEM_ORDERED:
-            return {...state, itemCount: state.itemCount -= action.quantity}
-        default:
-            return state
-    }
-}
+const coffeeReducer = (state = initialCoffeeState, action) => {
+  switch (action.type) {
+    case COFFEE_ORDERED:
+      return { ...state, coffeeCount: state.coffeeCount - action.payload };
+    case COFFEE_RESTOCKED:
+      return { ...state, coffeeCount: state.coffeeCount + action.payload };
+    default:
+      return state;
+  }
+};
+const teaReducer = (state = initialTeaState, action) => {
+  switch (action.type) {
+    case TEA_ORDERED:
+      return { ...state, teaCount: state.teaCount - action.payload };
+    case TEA_RESTOCKED:
+      return { ...state, teaCount: state.teaCount + action.payload };
+    default:
+      return state;
+  }
+};
+
+const rootReducer = redux.combineReducers({
+  coffee: coffeeReducer,
+  tea: teaReducer,
+});
 
 // Store
-const store = redux.legacy_createStore(reducer)
+const store = redux.legacy_createStore(rootReducer);
 
-console.log('Initial state => ', store.getState())
+console.log("Initial state => ", store.getState());
 
 const unsubscribe = store.subscribe(() => {
-    console.log('State Updated => ', store.getState())
-})
+  console.log("State Updated => ", store.getState());
+});
 
-store.dispatch(orderItem(5))
-store.dispatch(orderItem(5))
-store.dispatch(orderItem(5))
-store.dispatch(orderItem(5))
+const action = redux.bindActionCreators(
+  { orderCoffee, restockCoffee, orderTea, restockTea },
+  store.dispatch,
+);
 
-unsubscribe()
+action.orderCoffee(3);
+action.restockCoffee(4);
 
+action.orderTea(3);
+action.restockTea(4);
+
+unsubscribe();
