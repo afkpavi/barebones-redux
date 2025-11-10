@@ -1,4 +1,5 @@
 const redux = require("redux");
+const reduxLogger = require("redux-logger");
 
 // Action Types
 const COFFEE_ORDERED = "COFFEE_ORDERED";
@@ -70,13 +71,16 @@ const rootReducer = redux.combineReducers({
 });
 
 // Store
-const store = redux.legacy_createStore(rootReducer);
+const store = redux.legacy_createStore(
+  rootReducer,
+  redux.applyMiddleware(reduxLogger.createLogger()),
+);
 
 console.log("Initial state => ", store.getState());
 
-const unsubscribe = store.subscribe(() => {
-  console.log("State Updated => ", store.getState());
-});
+// const unsubscribe = store.subscribe(() => {
+//   console.log("State Updated => ", store.getState());
+// });
 
 const action = redux.bindActionCreators(
   { orderCoffee, restockCoffee, orderTea, restockTea },
@@ -89,4 +93,4 @@ action.restockCoffee(4);
 action.orderTea(3);
 action.restockTea(4);
 
-unsubscribe();
+// unsubscribe();
