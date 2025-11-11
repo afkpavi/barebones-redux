@@ -1,20 +1,29 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const initialState = {
+type UserType = {
+  name: string;
+  id: number;
+};
+
+type InitialState = {
+  loading: boolean;
+  error: string;
+  users: UserType[];
+};
+
+const initialState: InitialState = {
   loading: false,
   users: [],
   error: "",
 };
 
-export const fetchUsers = createAsyncThunk(
-  "users/fetchUsers",
-  (state, action) => {
-    return axios
-      .get("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.data.map((user) => user.name));
-  },
-);
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
+  const response = await axios.get(
+    "https://jsonplaceholder.typicode.com/users",
+  );
+  return response.data.map((user: UserType) => user);
+});
 
 const userSlice = createSlice({
   name: "users",
@@ -27,14 +36,17 @@ const userSlice = createSlice({
     });
     builder.addCase(fetchUsers.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.error.message;
+      state.error = action.error.message || "Unknown error";
       state.users = [];
     });
-    builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.loading = false;
-      state.error = "";
-      state.users = action.payload;
-    });
+    builder.addCase(
+      fetchUsers.fulfilled,
+      (state, action: PayloadAction<UserType[]>) => {
+        state.loading = false;
+        state.error = "";
+        state.users = action.payload;
+      },
+    );
   },
 });
 

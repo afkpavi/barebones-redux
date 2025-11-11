@@ -1,6 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+type InitialState = {
+  numOfCars: number;
+};
+
+const initialState: InitialState = {
   numOfCars: 200,
 };
 
@@ -11,7 +15,7 @@ const carSlice = createSlice({
     order: (state) => {
       state.numOfCars--;
     },
-    restock: (state, action) => {
+    restock: (state, action: PayloadAction<number>) => {
       state.numOfCars += action.payload;
     },
   },

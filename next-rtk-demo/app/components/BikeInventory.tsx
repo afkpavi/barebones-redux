@@ -1,15 +1,14 @@
 "use client";
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { order, restock } from "../redux/features/bike/bikeSlice";
+import { useAppSelector } from "../redux/hooks";
+import { useDispatch } from "react-redux";
 
-type Props = {};
-
-const BikeInventory = (props: Props) => {
-  const numOfBikes = useSelector((state) => state.bike.numOfBikes);
+const BikeInventory = () => {
+  const numOfBikes = useAppSelector((state) => state.bike.numOfBikes);
   const dispatch = useDispatch();
 
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState<number>(1);
 
   return (
     <div>

@@ -1,13 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { order, restock } from "../redux/features/car/carSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
-type Props = {};
-
-const CarInventory = (props: Props) => {
-  const numOfCars = useSelector((state) => state.cars.numOfCars);
-  const dispatch = useDispatch();
+const CarInventory = () => {
+  const numOfCars = useAppSelector((state) => state.cars.numOfCars);
+  const dispatch = useAppDispatch();
 
   const [value, setValue] = useState(1);
 
